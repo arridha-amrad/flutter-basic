@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:try_flutter/tryWidgets/columnWidget.dart';
-import 'package:try_flutter/tryWidgets/rowWidget.dart';
-import 'package:try_flutter/tryWidgets/singleChildScrollViewWidget.dart';
-// import 'package:try_flutter/tryWidgets/textWidget.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,6 +13,43 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: SingleChildScollViewWidget());
+        home: LearnStFull());
+  }
+}
+
+class LearnStFull extends StatefulWidget {
+  @override
+  _LearnStFullState createState() => _LearnStFullState();
+}
+
+class _LearnStFullState extends State<LearnStFull> {
+  int number = 0;
+
+  void tambah() {
+    setState(() => number += 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Learn Statefull Widget"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(number.toString()),
+            TextButton(
+              onPressed: tambah,
+              child: Text(
+                "add",
+                style: TextStyle(fontSize: number.toDouble()),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
