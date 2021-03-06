@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:try_flutter/learnHttpRequest/home.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:try_flutter/bloc/counterbloc_bloc.dart';
+// import 'package:try_flutter/learnHttpRequest/home.dart';
+
+import 'learnFlutterBloc/mainPage.dart';
 // import 'package:try_flutter/simpleView/customCard.dart';
 // import 'package:try_flutter/tryWidgets/fabWidget.dart';
 // import 'package:try_flutter/tryWidgets/inkWellWidget.dart';
@@ -22,11 +26,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        debugShowCheckedModeBanner: false,
-        home: HomeHttpRequest());
+    return BlocProvider(
+      create: (_) => CounterblocBloc(),
+      child: MaterialApp(
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          debugShowCheckedModeBanner: false,
+          home: MainPage()),
+    );
   }
 }
