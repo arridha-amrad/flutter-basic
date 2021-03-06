@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:try_flutter/tryWidgets/columnWidget.dart';
-import 'package:try_flutter/tryWidgets/rowWidget.dart';
-import 'package:try_flutter/tryWidgets/singleChildScrollViewWidget.dart';
+import 'package:try_flutter/learnHttpRequest/home.dart';
+// import 'package:try_flutter/simpleView/customCard.dart';
+// import 'package:try_flutter/tryWidgets/fabWidget.dart';
+// import 'package:try_flutter/tryWidgets/inkWellWidget.dart';
+// import 'package:try_flutter/tryWidgets/mediaQueryWidget.dart';
+// import 'package:try_flutter/tryWidgets/stackWidget.dart';
+// import 'package:try_flutter/tryWidgets/textFieldWidget.dart';
+// import 'package:try_flutter/tryWidgets/flexibleWidget.dart';
+// import 'package:try_flutter/tryWidgets/stackWidget.dart';
+// import 'package:try_flutter/tryWidgets/columnWidget.dart';
+// import 'package:try_flutter/tryWidgets/listViewWidget.dart';
+// import 'package:try_flutter/tryWidgets/rowWidget.dart';
+// import 'package:try_flutter/tryWidgets/singleChildScrollViewWidget.dart';
 // import 'package:try_flutter/tryWidgets/textWidget.dart';
 
 void main() {
@@ -17,6 +27,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         debugShowCheckedModeBanner: false,
-        home: SingleChildScollViewWidget());
+        home: HomeHttpRequest());
   }
 }
