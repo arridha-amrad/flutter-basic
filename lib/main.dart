@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -9,58 +11,69 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  List<String> restaurants = [
+    "McDonald's",
+    "KFC",
+    "Pizza Hut",
+    "Baskin Robbins",
+    "Sederhana",
+    "Lamun Ombak"
+  ];
 
-  void _incrementCounter() {
+  int index;
+
+  selectIndex() {
+    int number = Random().nextInt(restaurants.length);
+    print("number : $number");
     setState(() {
-      _counter++;
+      index = number;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text(
-              'You have pushed the button this many times:',
+              "Where you want to eat?",
+              style: TextStyle(fontSize: 18, color: Colors.black45),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: (index != null)
+                    ? Text(
+                        "${restaurants[index]}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      )
+                    : null),
+            ElevatedButton(
+                style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(0.0),
+                    backgroundColor: MaterialStateProperty.all(Colors.purple)),
+                onPressed: selectIndex,
+                child: Text("Pick your restaurant"))
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
