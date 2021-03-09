@@ -19,7 +19,10 @@ class Preferences {
 
   static AppTheme getTheme() {
     String theme = preferences.getString(KEY_SELECTED_THEME);
-    return getThemeFromString(jsonDecode(theme)) ?? AppTheme.lightTheme;
+    if (theme == null) {
+      return AppTheme.lightTheme;
+    }
+    return getThemeFromString(jsonDecode(theme));
   }
 
   static AppTheme getThemeFromString(String themeString) {
