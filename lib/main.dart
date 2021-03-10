@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:try_flutter/data_service.dart';
+import 'package:try_flutter/model.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,54 +15,83 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  TextEditingController _myTextController = TextEditingController();
+  WeatherResponse? _response;
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final _formKey = GlobalKey<FormState>();
 
+  final DataService dataService = DataService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            width: double.infinity,
+            // color: Colors.grey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${_response?.temperatureInfo.temperature.toString() ?? ''}°C",
+                  style: TextStyle(fontSize: 45, fontWeight: FontWeight.bold),
+                ),
+                (_response?.iconUrl != null)
+                    ? Image.network(_response!.iconUrl!)
+                    : Text(""),
+                // Image.network(_response?.iconUrl ?? ""),
+                Text(
+                  _response?.cityName ?? "",
+                  style: TextStyle(fontSize: 20),
+                ),
+                Text(_response?.weatherInfo.description ?? ""),
+                SizedBox(
+                  width: 200,
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your city';
+                        }
+                        return null;
+                      },
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(hintText: "City..."),
+                      controller: _myTextController,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child:
+                      ElevatedButton(onPressed: search, child: Text("Search")),
+                )
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void search() async {
+    if (_formKey.currentState!.validate()) {
+      final response = await dataService.getWeather(_myTextController.text);
+      setState(() {
+        _response = response;
+      });
+    }
   }
 }
