@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:try_flutter/button_widget.dart';
+import 'package:try_flutter/model.dart';
+import 'package:try_flutter/preferences.dart';
+import 'package:try_flutter/radio_list_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,58 +13,140 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  TextEditingController _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  Gender _gender = Gender.MALE;
+  Set<Language> _language = Set<Language>();
+  bool _isEmployed = false;
+  final Preferences _preferences = Preferences();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text("Shared Preferences Demo"),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            ListTile(
+              title: TextFormField(
+                controller: _controller,
+                decoration: InputDecoration(labelText: "Username"),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "Username is required";
+                  }
+                },
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            MyRadioListTile(
+                title: "Male",
+                groupValue: _gender,
+                onChanged: (val) => setState(() => _gender = val as Gender)),
+            MyRadioListTile(
+                title: "Female",
+                groupValue: _gender,
+                onChanged: (val) => setState(() => _gender = val as Gender)),
+            MyRadioListTile(
+                title: "Other",
+                groupValue: _gender,
+                onChanged: (val) => setState(() => _gender = val as Gender)),
+            CheckboxListTile(
+                title: Text("Dart"),
+                value: _language.contains(Language.DART),
+                onChanged: (val) {
+                  setState(() {
+                    _language.contains(Language.DART)
+                        ? _language.remove(Language.DART)
+                        : _language.add(Language.DART);
+                  });
+                }),
+            CheckboxListTile(
+                title: Text("Typescript"),
+                value: _language.contains(Language.TYPESCRIPT),
+                onChanged: (_) => setState(() =>
+                    _language.contains(Language.TYPESCRIPT)
+                        ? _language.remove(Language.TYPESCRIPT)
+                        : _language.add(Language.TYPESCRIPT))),
+            CheckboxListTile(
+                title: Text("Kotlin"),
+                value: _language.contains(Language.KOTLIN),
+                onChanged: (_) {
+                  setState(() {
+                    _language.contains(Language.KOTLIN)
+                        ? _language.remove(Language.KOTLIN)
+                        : _language.add(Language.KOTLIN);
+                  });
+                }),
+            CheckboxListTile(
+                title: Text("Swift"),
+                value: _language.contains(Language.SWIFT),
+                onChanged: (_) {
+                  setState(() {
+                    _language.contains(Language.SWIFT)
+                        ? _language.remove(Language.SWIFT)
+                        : _language.add(Language.SWIFT);
+                  });
+                }),
+            SwitchListTile(
+                title: Text("Is Employed"),
+                value: _isEmployed,
+                onChanged: (val) {
+                  setState(() {
+                    _isEmployed = val;
+                  });
+                }),
+            MyButton(buttonText: "Save", onPressed: _savedSettings),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _savedSettings() async {
+    if (_formKey.currentState!.validate()) {
+      Settings settings = Settings(
+          gender: _gender,
+          language: _language,
+          username: _controller.text,
+          isEmployed: _isEmployed);
+
+      await _preferences.savedSettings(settings);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Saving...")));
+    }
+  }
+
+  void _populateFields() async {
+    final settings = await _preferences.getSettings();
+    setState(() {
+      _controller.text = settings.username;
+      _gender = settings.gender;
+      _isEmployed = settings.isEmployed;
+      _language = settings.language;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _populateFields();
   }
 }
