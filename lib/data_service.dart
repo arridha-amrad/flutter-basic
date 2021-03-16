@@ -15,10 +15,10 @@ class DataService {
       final json = jsonDecode(response.body) as List;
       // print('json : $json');
       posts = json.map((e) => Post.fromJson(e)).toList();
-      print('posts : $posts');
+      // print('posts : $posts');
       // print(posts.map((e) => e.body));
     } catch (e) {
-      print(e);
+      throw e;
     }
     return posts;
   }

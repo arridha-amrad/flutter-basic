@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:try_flutter/post_cubit.dart';
-import 'package:try_flutter/post_model.dart';
+import 'package:try_flutter/post_bloc.dart';
 
 class PostView extends StatefulWidget {
   @override
@@ -12,7 +11,7 @@ class _PostViewState extends State<PostView> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<PostCubit>(context).getPosts();
+    // BlocProvider.of<PostBloc>(context).add(LoadedPostEvent());
   }
 
   @override
@@ -21,20 +20,30 @@ class _PostViewState extends State<PostView> {
         appBar: AppBar(
           title: Text("Post View"),
         ),
-        body: BlocBuilder<PostCubit, List<Post>>(
-            builder: (BuildContext context, List<Post> posts) {
-          if (posts.isEmpty) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return ListView.builder(itemBuilder: (context, index) {
-            return Card(
-              elevation: 2.0,
-              child: ListTile(
-                title: Text(posts[index].title),
-                subtitle: Text(posts[index].body),
-              ),
+        body: BlocBuilder<PostBloc, PostState>(
+            builder: (BuildContext context, PostState state) {
+          if (state is LoadingPostState) {
+            return Center(child: Text('loading 🧨'));
+          } else if (state is LoadedPostState) {
+            return RefreshIndicator(
+              onRefresh: () async =>
+                  context.read<PostBloc>().add(LoadedPostEvent()),
+              child: ListView.builder(
+                  itemCount: state.posts.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 2.0,
+                      child: ListTile(
+                        title: Text(state.posts[index].title),
+                        subtitle: Text(state.posts[index].body),
+                      ),
+                    );
+                  }),
             );
-          });
+          } else if (state is FailedToLoadPostState) {
+            return Text('Error occured, ${state.error}');
+          }
+          return Container();
         }));
   }
 }
