@@ -1,0 +1,13 @@
+{
+  "projectName": "try_flutter",
+  "version": "2.0",
+  "frontend": "flutter",
+  "providers": [
+    "awscloudformation"
+  ],
+  "flutter": {
+    "config": {
+      "ResDir": "./lib/"
+    }
+  }
+}
