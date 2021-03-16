@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:try_flutter/nav_cubit.dart';
 import 'package:try_flutter/post_bloc.dart';
 
 class PostView extends StatefulWidget {
@@ -34,6 +35,9 @@ class _PostViewState extends State<PostView> {
                     return Card(
                       elevation: 2.0,
                       child: ListTile(
+                        onTap: () => context
+                            .read<NavCubit>()
+                            .showPostDetails(state.posts[index]),
                         title: Text(state.posts[index].title),
                         subtitle: Text(state.posts[index].body),
                       ),
